@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#111522"/>
+      <stop offset="50%" stop-color="#0a0c14"/>
+      <stop offset="100%" stop-color="#05060a"/>
+    </linearGradient>
+
+    <!-- Bezel Highlight Gradient -->
+    <linearGradient id="bezelGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#38435d" stop-opacity="0.8"/>
+      <stop offset="40%" stop-color="#1f2535" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#0d1017" stop-opacity="0.2"/>
+    </linearGradient>
+
+    <!-- Chrome Ribbon Gradient for the Structure -->
+    <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#f1f5f9"/>
+      <stop offset="70%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+
+    <!-- Ruby Core Glow -->
+    <radialGradient id="auraGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e11d48" stop-opacity="0.6"/>
+      <stop offset="40%" stop-color="#e11d48" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#e11d48" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Core Dot Gradient -->
+    <linearGradient id="coreDotGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fda4af"/>
+      <stop offset="40%" stop-color="#f43f5e"/>
+      <stop offset="100%" stop-color="#be123c"/>
+    </linearGradient>
+
+    <!-- Subtle Radial Glow behind icon mark -->
+    <radialGradient id="centerGlow" cx="50%" cy="45%" r="60%">
+      <stop offset="0%" stop-color="#2a344d" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#000000" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Drop Shadow for Upper Horizon -->
+    <filter id="shadowMark" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000000" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Base Squircle Background -->
+  <rect width="1024" height="1024" rx="224" fill="url(#bgGrad)"/>
+  <rect width="1024" height="1024" rx="224" fill="url(#centerGlow)"/>
+  <!-- Inset Border / Bezel -->
+  <rect x="8" y="8" width="1008" height="1008" rx="216" fill="none" stroke="url(#bezelGrad)" stroke-width="12"/>
+
+  <!-- Icon Graphic Mark -->
+  <g filter="url(#shadowMark)">
+    <!-- Top Horizon Bar (T-Bar) -->
+    <rect x="236" y="240" width="552" height="68" rx="34" fill="url(#ribbonGrad)"/>
+
+    <!-- Bottom Horizon Base -->
+    <rect x="296" y="716" width="432" height="56" rx="28" fill="url(#ribbonGrad)" opacity="0.95"/>
+
+    <!-- Flowing Temporal Hourglass Contour / Stem -->
+    <!-- Left Curve -->
+    <path
+      d="M 330 300 C 330 460 480 480 480 512 C 480 544 330 564 330 724"
+      fill="none"
+      stroke="url(#ribbonGrad)"
+      stroke-width="56"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+    <!-- Right Curve -->
+    <path
+      d="M 694 300 C 694 460 544 480 544 512 C 544 544 694 564 694 724"
+      fill="none"
+      stroke="url(#ribbonGrad)"
+      stroke-width="56"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+
+    <!-- Central Precision T-Axis Guide Lines (Subtle) -->
+    <line x1="512" y1="260" x2="512" y2="400" stroke="#475569" stroke-width="8" stroke-linecap="round" stroke-dasharray="16 16" opacity="0.6"/>
+    <line x1="512" y1="624" x2="512" y2="720" stroke="#475569" stroke-width="8" stroke-linecap="round" stroke-dasharray="16 16" opacity="0.6"/>
+
+    <!-- Active Temporal Core / Present Moment -->
+    <!-- Aura Glow -->
+    <circle cx="512" cy="512" r="140" fill="url(#auraGlow)"/>
+
+    <!-- Core Red Beacon -->
+    <circle cx="512" cy="512" r="54" fill="url(#coreDotGrad)"/>
+    <circle cx="512" cy="512" r="54" fill="none" stroke="#ffe4e6" stroke-width="5" opacity="0.8"/>
+
+    <!-- Precision Spark Center -->
+    <circle cx="498" cy="498" r="14" fill="#ffffff" opacity="0.9"/>
+  </g>
+</svg>
