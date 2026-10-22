@@ -99,6 +99,9 @@ export function App() {
 
   useEffect(() => {
     loadData();
+    // Tickets can also be added by AI agents through tempo-cli, so pick them up when the window comes back.
+    window.addEventListener('focus', loadData);
+    return () => window.removeEventListener('focus', loadData);
   }, []);
 
   // Global Keyboard Shortcuts

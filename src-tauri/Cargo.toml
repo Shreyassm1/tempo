@@ -5,6 +5,7 @@ description = "Tempo - Smart Linear Task Manager with Real-World Scheduling Engi
 authors = ["Tempo Team"]
 license = "MIT"
 edition = "2021"
+default-run = "tempo"
 rust-version = "1.77.2"
 
 [lib]

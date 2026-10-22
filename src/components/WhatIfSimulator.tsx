@@ -48,26 +48,25 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({
   const [committing, setCommitting] = useState<boolean>(false);
   const [committedSuccess, setCommittedSuccess] = useState<boolean>(false);
 
-  const runSimulation = async () => {
-    setLoading(true);
-    try {
-      const req: WhatIfRequest = {
-        candidate_title: candidateTitle,
-        candidate_estimated_hours: Number(estimatedHours) || 1.0,
-        candidate_priority: priority,
-        candidate_buffer_ratio: bufferRatio,
-        existing_task_id: existingTaskId,
-      };
-      const res = await api.simulateImpact(req);
-      setSimulation(res);
-    } catch (e) {
-      console.error('Simulation failed:', e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const runSimulation = async () => {
+      setLoading(true);
+      try {
+        const req: WhatIfRequest = {
+          candidate_title: candidateTitle,
+          candidate_estimated_hours: Number(estimatedHours) || 1.0,
+          candidate_priority: priority,
+          candidate_buffer_ratio: bufferRatio,
+          existing_task_id: existingTaskId,
+        };
+        const res = await api.simulateImpact(req);
+        setSimulation(res);
+      } catch (e) {
+        console.error('Simulation failed:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
     runSimulation();
   }, [candidateTitle, estimatedHours, priority, bufferRatio, existingTaskId]);
 

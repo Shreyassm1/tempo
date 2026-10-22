@@ -51,6 +51,11 @@ export const TaskCard: React.FC<TaskCardProps> = ({
           <span className="text-[11px] font-mono font-medium text-slate-500 dark:text-zinc-500">
             {task.ticket_id}
           </span>
+          {task.parent_ticket_id && (
+            <span className="text-[10px] font-mono text-slate-400 dark:text-zinc-500" title={`Subtask of ${task.parent_ticket_id}`}>
+              ↳ {task.parent_ticket_id}
+            </span>
+          )}
           <PriorityBadge priority={task.priority} size="sm" />
           {task.force_start_today && settings?.smart_rollover !== false && task.status !== 'done' && (
             <span className="text-[10px] font-medium px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400 border border-indigo-200/50 dark:border-indigo-800/40">

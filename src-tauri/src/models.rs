@@ -19,6 +19,8 @@ pub struct Task {
     pub updated_at: String,
     #[serde(default)]
     pub force_start_today: bool,
+    #[serde(default)]
+    pub parent_ticket_id: Option<String>,
 }
 
 fn default_true() -> bool {
@@ -61,6 +63,7 @@ pub struct CreateTaskInput {
     pub due_date: Option<String>,
     pub status: Option<String>,
     pub force_start_today: Option<bool>,
+    pub parent_ticket_id: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

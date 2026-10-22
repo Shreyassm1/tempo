@@ -208,6 +208,16 @@ pub fn calculate_schedule(
         a.created_at.cmp(&b.created_at)
     });
 
+    // A ticket with open subtasks is a container: the subtasks carry the effort, and the
+    // container spans from its first subtask's start to its last subtask's deadline.
+    let parent_ids: HashSet<String> = active_tasks
+        .iter()
+        .filter_map(|t| t.parent_ticket_id.clone())
+        .collect();
+    let (mut containers, mut active_tasks): (Vec<Task>, Vec<Task>) = active_tasks
+        .into_iter()
+        .partition(|t| parent_ids.contains(&t.ticket_id));
+
     let local_anchor: DateTime<FixedOffset> = anchor_time.with_timezone(&config.timezone_offset);
     let mut cursor = snap_to_work_window(local_anchor, &config);
 
@@ -252,6 +262,17 @@ pub fn calculate_schedule(
         // Advance cursor for next item
         cursor = deadline;
     }
+
+    for container in containers.iter_mut() {
+        let subtasks: Vec<&Task> = active_tasks
+            .iter()
+            .filter(|t| t.parent_ticket_id.as_deref() == Some(container.ticket_id.as_str()))
+            .collect();
+        // Same offset and format throughout, so RFC 3339 strings order chronologically.
+        container.scheduled_start = subtasks.iter().filter_map(|t| t.scheduled_start.clone()).min();
+        container.scheduled_deadline = subtasks.iter().filter_map(|t| t.scheduled_deadline.clone()).max();
+    }
+    active_tasks.append(&mut containers);
 
     // Merge scheduled active tasks with untouched completed/canceled tasks
     let active_map: std::collections::HashMap<String, Task> =
@@ -324,6 +345,7 @@ pub fn simulate_what_if_impact(
             created_at: now.to_rfc3339(),
             updated_at: now.to_rfc3339(),
             force_start_today: request.candidate_force_start_today.unwrap_or(false),
+            parent_ticket_id: None,
         };
         simulated_tasks.push(candidate_task);
     }
@@ -546,6 +568,7 @@ mod tests {
             created_at: monday_evening.to_rfc3339(),
             updated_at: monday_evening.to_rfc3339(),
             force_start_today: false,
+            parent_ticket_id: None,
         };
 
         let sched = calculate_schedule(&[postponed_task], &settings, monday_evening);
@@ -571,6 +594,7 @@ mod tests {
             created_at: monday_evening.to_rfc3339(),
             updated_at: monday_evening.to_rfc3339(),
             force_start_today: true,
+            parent_ticket_id: None,
         };
 
         let sched_forced = calculate_schedule(&[forced_task], &settings, monday_evening);
@@ -627,6 +651,7 @@ mod tests {
                 created_at: now.to_rfc3339(),
                 updated_at: now.to_rfc3339(),
                 force_start_today: false,
+                parent_ticket_id: None,
             }
         ];
 
@@ -645,5 +670,49 @@ mod tests {
         assert!(response.summary.total_delay_hours > 0.0);
         assert_eq!(response.impacted_tasks[0].task_id, "t1");
         assert!(response.impacted_tasks[0].is_delayed);
+    }
+
+    #[test]
+    fn test_parent_spans_its_subtasks_instead_of_adding_effort() {
+        let settings = UserSettings { default_buffer_ratio: 0.0, context_switch_minutes: 0, ..UserSettings::default() };
+        let monday_10am = Utc.with_ymd_and_hms(2026, 10, 19, 10, 0, 0).unwrap();
+        let task = |ticket: &str, hours: f64, idx: i32, parent: Option<&str>| Task {
+            id: ticket.to_string(),
+            ticket_id: ticket.to_string(),
+            title: ticket.to_string(),
+            description: "".to_string(),
+            status: "todo".to_string(),
+            priority: "medium".to_string(),
+            priority_index: idx,
+            estimated_hours: hours,
+            buffer_ratio: 0.0,
+            scheduled_start: None,
+            scheduled_deadline: None,
+            due_date: None,
+            completed_at: None,
+            created_at: monday_10am.to_rfc3339(),
+            updated_at: monday_10am.to_rfc3339(),
+            force_start_today: false,
+            parent_ticket_id: parent.map(str::to_string),
+        };
+        let tasks = vec![
+            task("TEM-1", 8.0, 1, None),
+            task("TEM-2", 1.0, 2, Some("TEM-1")),
+            task("TEM-3", 2.0, 3, Some("TEM-1")),
+            task("TEM-4", 1.0, 4, None),
+        ];
+
+        let sched = calculate_schedule(&tasks, &settings, monday_10am);
+        let time = |id: &str, deadline: bool| {
+            let t = sched.iter().find(|t| t.ticket_id == id).unwrap();
+            let s = if deadline { &t.scheduled_deadline } else { &t.scheduled_start };
+            DateTime::parse_from_rfc3339(s.as_ref().unwrap()).unwrap().time()
+        };
+        let at = |h| NaiveTime::from_hms_opt(h, 0, 0).unwrap();
+
+        assert_eq!((time("TEM-1", false), time("TEM-1", true)), (at(10), at(13)));
+        assert_eq!((time("TEM-3", false), time("TEM-3", true)), (at(11), at(13)));
+        // the parent's own 8h is not booked, so the next ticket starts right after the subtasks
+        assert_eq!((time("TEM-4", false), time("TEM-4", true)), (at(13), at(14)));
     }
 }

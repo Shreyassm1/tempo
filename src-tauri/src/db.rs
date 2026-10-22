@@ -13,6 +13,9 @@ pub struct DbState {
 impl DbState {
     pub fn new(db_path: PathBuf) -> Result<Self> {
         let conn = Connection::open(db_path)?;
+        // The app and tempo-cli (used by AI agents) share this file, so wait out each other's writes.
+        conn.busy_timeout(std::time::Duration::from_secs(5))?;
+        conn.execute_batch("PRAGMA foreign_keys = ON")?;
         init_db(&conn)?;
         Ok(Self {
             conn: Mutex::new(conn),
@@ -58,8 +61,8 @@ fn init_db(conn: &Connection) -> Result<()> {
     // Migrations in case tables exist from prior runs
     let _ = conn.execute("ALTER TABLE settings ADD COLUMN smart_rollover INTEGER NOT NULL DEFAULT 1", []);
     let _ = conn.execute("ALTER TABLE tasks ADD COLUMN force_start_today INTEGER NOT NULL DEFAULT 0", []);
-    // Reset any test overrides on TEM-103
-    let _ = conn.execute("UPDATE tasks SET force_start_today = 0 WHERE ticket_id = 'TEM-103'", []);
+    let _ = conn.execute("ALTER TABLE tasks ADD COLUMN parent_ticket_id TEXT REFERENCES tasks(ticket_id) ON DELETE SET NULL", []);
+    let _ = conn.execute("ALTER TABLE settings ADD COLUMN last_ticket_num INTEGER NOT NULL DEFAULT 100", []);
 
     // Seed default settings if not exists
     let settings_count: i64 = conn.query_row(
@@ -81,7 +84,7 @@ fn init_db(conn: &Connection) -> Result<()> {
 
 pub fn get_all_tasks(conn: &Connection) -> Result<Vec<Task>> {
     let mut stmt = conn.prepare(
-        "SELECT id, ticket_id, title, description, status, priority, priority_index, estimated_hours, buffer_ratio, scheduled_start, scheduled_deadline, due_date, completed_at, created_at, updated_at, force_start_today
+        "SELECT id, ticket_id, title, description, status, priority, priority_index, estimated_hours, buffer_ratio, scheduled_start, scheduled_deadline, due_date, completed_at, created_at, updated_at, force_start_today, parent_ticket_id
          FROM tasks ORDER BY 
             CASE status 
                 WHEN 'in_progress' THEN 1 
@@ -119,6 +122,7 @@ pub fn get_all_tasks(conn: &Connection) -> Result<Vec<Task>> {
             created_at: row.get(13)?,
             updated_at: row.get(14)?,
             force_start_today: row.get::<_, i32>(15).unwrap_or(0) == 1,
+            parent_ticket_id: row.get(16)?,
         })
     })?;
 
@@ -176,16 +180,15 @@ pub fn update_settings(conn: &Connection, settings: &UserSettings) -> Result<()>
 }
 
 fn next_ticket_id(conn: &Connection) -> Result<String> {
-    let mut stmt = conn.prepare("SELECT ticket_id FROM tasks ORDER BY rowid DESC LIMIT 1")?;
-    let last_ticket: Option<String> = stmt.query_row([], |row| row.get(0)).ok();
-
-    let next_num = match last_ticket {
-        Some(tid) if tid.starts_with("TEM-") => {
-            let num_str = &tid[4..];
-            num_str.parse::<i32>().unwrap_or(100) + 1
-        }
-        _ => 101,
-    };
+    // Persistent counter so deleting the newest task never frees its number for reuse.
+    // MAX against existing tickets covers databases created before the counter existed.
+    let next_num: i64 = conn.query_row(
+        "UPDATE settings SET last_ticket_num = MAX(last_ticket_num,
+            (SELECT COALESCE(MAX(CAST(SUBSTR(ticket_id, 5) AS INTEGER)), 100) FROM tasks WHERE ticket_id LIKE 'TEM-%')) + 1
+         WHERE id = 1 RETURNING last_ticket_num",
+        [],
+        |row| row.get(0),
+    )?;
 
     Ok(format!("TEM-{}", next_num))
 }
@@ -206,8 +209,8 @@ pub fn create_task(conn: &Connection, input: CreateTaskInput) -> Result<Task> {
     ).unwrap_or(0);
 
     conn.execute(
-        "INSERT INTO tasks (id, ticket_id, title, description, status, priority, priority_index, estimated_hours, buffer_ratio, due_date, created_at, updated_at, force_start_today)
-         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13)",
+        "INSERT INTO tasks (id, ticket_id, title, description, status, priority, priority_index, estimated_hours, buffer_ratio, due_date, created_at, updated_at, force_start_today, parent_ticket_id)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)",
         params![
             id,
             ticket_id,
@@ -222,6 +225,7 @@ pub fn create_task(conn: &Connection, input: CreateTaskInput) -> Result<Task> {
             now,
             now,
             if input.force_start_today.unwrap_or(false) { 1 } else { 0 },
+            input.parent_ticket_id,
         ],
     )?;
 
@@ -230,7 +234,7 @@ pub fn create_task(conn: &Connection, input: CreateTaskInput) -> Result<Task> {
 
 pub fn get_task_by_id(conn: &Connection, id: &str) -> Result<Task> {
     conn.query_row(
-        "SELECT id, ticket_id, title, description, status, priority, priority_index, estimated_hours, buffer_ratio, scheduled_start, scheduled_deadline, due_date, completed_at, created_at, updated_at, force_start_today
+        "SELECT id, ticket_id, title, description, status, priority, priority_index, estimated_hours, buffer_ratio, scheduled_start, scheduled_deadline, due_date, completed_at, created_at, updated_at, force_start_today, parent_ticket_id
          FROM tasks WHERE id = ?1",
         params![id],
         |row| {
@@ -251,6 +255,7 @@ pub fn get_task_by_id(conn: &Connection, id: &str) -> Result<Task> {
                 created_at: row.get(13)?,
                 updated_at: row.get(14)?,
                 force_start_today: row.get::<_, i32>(15).unwrap_or(0) == 1,
+                parent_ticket_id: row.get(16)?,
             })
         },
     )
@@ -331,4 +336,25 @@ pub fn update_task_schedule(
         params![start, deadline, id],
     )?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn input(title: &str) -> CreateTaskInput {
+        CreateTaskInput { title: title.into(), description: None, priority: "medium".into(), estimated_hours: 1.0,
+            buffer_ratio: None, due_date: None, status: None, force_start_today: None, parent_ticket_id: None }
+    }
+
+    #[test]
+    fn ticket_numbers_are_never_reused() {
+        let conn = Connection::open_in_memory().unwrap();
+        init_db(&conn).unwrap();
+        create_task(&conn, input("a")).unwrap();
+        let b = create_task(&conn, input("b")).unwrap();
+        assert_eq!(b.ticket_id, "TEM-102");
+        delete_task(&conn, &b.id).unwrap();
+        assert_eq!(create_task(&conn, input("c")).unwrap().ticket_id, "TEM-103");
+    }
 }

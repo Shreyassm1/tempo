@@ -2,9 +2,9 @@ use std::fs;
 use std::path::PathBuf;
 use tauri::{AppHandle, Manager, State};
 
-mod db;
-mod models;
-mod scheduler;
+pub mod db;
+pub mod models;
+pub mod scheduler;
 
 use db::{DbState, create_task as db_create_task, delete_task as db_delete_task, get_all_tasks, get_settings as db_get_settings, update_settings as db_update_settings, update_task as db_update_task, update_task_schedule};
 use models::{CreateTaskInput, Task, UpdateTaskInput, UserSettings, WhatIfRequest, WhatIfResponse};
@@ -49,13 +49,13 @@ fn get_tasks(db_state: State<'_, DbState>) -> Result<Vec<Task>, String> {
 
 #[tauri::command]
 fn create_task(db_state: State<'_, DbState>, input: CreateTaskInput) -> Result<Task, String> {
-    {
+    let created_id = {
         let conn = db_state.conn.lock().map_err(|e| e.to_string())?;
-        db_create_task(&conn, input).map_err(|e| e.to_string())?;
-    }
+        db_create_task(&conn, input).map_err(|e| e.to_string())?.id
+    };
     let all = sync_recalculate_all(&db_state)?;
     all.into_iter()
-        .last()
+        .find(|t| t.id == created_id)
         .ok_or_else(|| "Failed to retrieve created task".to_string())
 }
 

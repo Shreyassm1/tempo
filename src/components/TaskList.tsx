@@ -141,6 +141,11 @@ export const TaskList: React.FC<TaskListProps> = ({
                     {/* Identifier */}
                     <td className="py-3 px-4 font-mono font-medium text-slate-500 dark:text-zinc-400">
                       {task.ticket_id}
+                      {task.parent_ticket_id && (
+                        <div className="text-[10px] text-slate-400 dark:text-zinc-500" title={`Subtask of ${task.parent_ticket_id}`}>
+                          ↳ {task.parent_ticket_id}
+                        </div>
+                      )}
                     </td>
 
                     {/* Status Dropdown */}

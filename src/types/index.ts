@@ -19,6 +19,7 @@ export interface Task {
   created_at: string;
   updated_at: string;
   force_start_today?: boolean;
+  parent_ticket_id?: string | null;
 }
 
 export interface UserSettings {

@@ -24,6 +24,7 @@ let mockSettings: UserSettings = {
 };
 
 let mockTasks: Task[] = [];
+let mockLastTicketNum = 100;
 
 // Helper to simulate calendar calculation in fallback mode
 function calculateLocalSchedule(tasks: Task[], settings: UserSettings): Task[] {
@@ -50,17 +51,17 @@ function calculateLocalSchedule(tasks: Task[], settings: UserSettings): Task[] {
   let cursor = new Date();
   
   const snapCursor = (d: Date) => {
-    let cur = new Date(d);
+    const cur = new Date(d);
     for (let i = 0; i < 14; i++) {
-      let day = cur.getDay();
-      let dayIso = day === 0 ? 7 : day;
-      let isWorkDay = workDays.has(dayIso);
+      const day = cur.getDay();
+      const dayIso = day === 0 ? 7 : day;
+      const isWorkDay = workDays.has(dayIso);
 
-      let h = cur.getHours();
-      let m = cur.getMinutes();
-      let curMins = h * 60 + m;
-      let startMins = startH * 60 + startM;
-      let endMins = endH * 60 + endM;
+      const h = cur.getHours();
+      const m = cur.getMinutes();
+      const curMins = h * 60 + m;
+      const startMins = startH * 60 + startM;
+      const endMins = endH * 60 + endM;
 
       if (isWorkDay) {
         if (curMins < startMins) {
@@ -87,15 +88,15 @@ function calculateLocalSchedule(tasks: Task[], settings: UserSettings): Task[] {
 
     while (remaining > 0) {
       cur = snapCursor(cur);
-      let endOfDay = new Date(cur);
+      const endOfDay = new Date(cur);
       endOfDay.setHours(endH, endM, 0, 0);
 
-      let avail = Math.max(0, Math.floor((endOfDay.getTime() - cur.getTime()) / 60000));
+      const avail = Math.max(0, Math.floor((endOfDay.getTime() - cur.getTime()) / 60000));
       if (remaining <= avail) {
         cur = new Date(cur.getTime() + remaining * 60000);
         remaining = 0;
       } else {
-        let remainingAfterToday = remaining - avail;
+        const remainingAfterToday = remaining - avail;
         if (isSmartRollover && remainingAfterToday < 60) {
           cur = new Date(endOfDay.getTime() + remainingAfterToday * 60000);
           remaining = 0;
@@ -121,11 +122,11 @@ function calculateLocalSchedule(tasks: Task[], settings: UserSettings): Task[] {
 
     // Smart rollover: postpone starting if < 1h left today and task can't finish
     if (isSmartRollover && !t.force_start_today) {
-      let endOfDay = new Date(cursor);
+      const endOfDay = new Date(cursor);
       endOfDay.setHours(endH, endM, 0, 0);
-      let avail = Math.max(0, Math.floor((endOfDay.getTime() - cursor.getTime()) / 60000));
+      const avail = Math.max(0, Math.floor((endOfDay.getTime() - cursor.getTime()) / 60000));
       if (avail < 60 && bufferedMins > avail + 59) {
-        let nextDay = new Date(endOfDay.getTime() + 60000);
+        const nextDay = new Date(endOfDay.getTime() + 60000);
         cursor = snapCursor(nextDay);
       }
     }
@@ -167,7 +168,7 @@ export const api = {
       }
     }
 
-    const nextNum = mockTasks.length + 101;
+    const nextNum = ++mockLastTicketNum;
     const newTask: Task = {
       id: `task-${Date.now()}`,
       ticket_id: `TEM-${nextNum}`,
