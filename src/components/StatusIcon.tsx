@@ -1,24 +1,30 @@
 import React from 'react';
 import type { TaskStatus } from '../types';
-import { Circle, CircleDot, CheckCircle2, XCircle, Clock } from 'lucide-react';
+import { Flag, XCircle } from 'lucide-react';
+import { Horseshoe, SteelBall } from './Frontier';
 
 interface StatusIconProps {
   status: TaskStatus;
   className?: string;
 }
 
+// Backlog: a horseshoe not yet nailed on. To do: shod and ready. In progress: the steel ball is in play. Done: the finish flag.
 export const StatusIcon: React.FC<StatusIconProps> = ({ status, className = 'w-4 h-4' }) => {
   switch (status) {
     case 'in_progress':
-      return <CircleDot className={`${className} text-sky-600 dark:text-sky-400`} />;
+      return (
+        <span className={`${className} inline-flex items-center justify-center shrink-0`}>
+          <SteelBall size={14} className="w-full h-full" />
+        </span>
+      );
     case 'todo':
-      return <Clock className={`${className} text-slate-400 dark:text-zinc-400`} />;
+      return <Horseshoe className={`${className} text-amber-700 dark:text-amber-400`} />;
     case 'done':
-      return <CheckCircle2 className={`${className} text-emerald-600 dark:text-emerald-400`} />;
+      return <Flag className={`${className} text-emerald-600 dark:text-emerald-400`} />;
     case 'canceled':
       return <XCircle className={`${className} text-slate-400 dark:text-zinc-500`} />;
     case 'backlog':
     default:
-      return <Circle className={`${className} text-slate-400 dark:text-zinc-500`} strokeDasharray="3 3" />;
+      return <Horseshoe dashed className={`${className} text-slate-400 dark:text-zinc-500`} />;
   }
 };

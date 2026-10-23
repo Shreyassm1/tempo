@@ -59,7 +59,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   return (
     <div className="p-4 md:p-6 max-w-6xl mx-auto space-y-4">
       {/* Controls Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-[#0d0f17] p-3 rounded-xl border border-slate-200 dark:border-[#1c202d] shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-[#110c1a] p-3 rounded-xl border border-slate-200 dark:border-[#231934] shadow-sm">
         <div className="flex items-center gap-2.5 flex-1 min-w-[240px] px-2">
           <Search className="w-4 h-4 text-slate-400 dark:text-zinc-500 shrink-0" />
           <input
@@ -70,7 +70,7 @@ export const TaskList: React.FC<TaskListProps> = ({
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-transparent text-xs text-slate-900 dark:text-zinc-200 placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none"
           />
-          <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-slate-400 dark:text-zinc-500 bg-slate-100 dark:bg-[#1a1e2b] border border-slate-200 dark:border-zinc-800 rounded">
+          <kbd className="hidden sm:inline-block px-1.5 py-0.5 text-[10px] font-mono text-slate-400 dark:text-zinc-500 bg-slate-100 dark:bg-[#211731] border border-slate-200 dark:border-zinc-800 rounded">
             /
           </kbd>
         </div>
@@ -80,7 +80,7 @@ export const TaskList: React.FC<TaskListProps> = ({
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-slate-100 dark:bg-[#141722] text-xs text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-[#202534] rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 dark:focus:border-zinc-500"
+            className="bg-slate-100 dark:bg-[#191227] text-xs text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-[#281c3c] rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 dark:focus:border-zinc-500"
           >
             <option value="all">All statuses</option>
             {statuses.map((s) => (
@@ -94,7 +94,7 @@ export const TaskList: React.FC<TaskListProps> = ({
           <select
             value={priorityFilter}
             onChange={(e) => setPriorityFilter(e.target.value)}
-            className="bg-slate-100 dark:bg-[#141722] text-xs text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-[#202534] rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 dark:focus:border-zinc-500"
+            className="bg-slate-100 dark:bg-[#191227] text-xs text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-[#281c3c] rounded-lg px-3 py-1.5 focus:outline-none focus:border-slate-400 dark:focus:border-zinc-500"
           >
             <option value="all">All priorities</option>
             {priorities.map((p) => (
@@ -107,10 +107,10 @@ export const TaskList: React.FC<TaskListProps> = ({
       </div>
 
       {/* Table */}
-      <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-[#1c202d] bg-white dark:bg-[#0d0f17] shadow-sm">
+      <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-[#231934] bg-white dark:bg-[#110c1a] shadow-sm">
         <table className="w-full text-left text-xs">
           <thead>
-            <tr className="border-b border-slate-200 dark:border-[#1c202d] bg-slate-50 dark:bg-[#111420] text-slate-600 dark:text-zinc-400 font-medium text-[11px]">
+            <tr className="border-b border-slate-200 dark:border-[#231934] bg-slate-50 dark:bg-[#171024] text-slate-600 dark:text-zinc-400 font-medium text-[11px]">
               <th className="py-3 px-4 w-28">Task</th>
               <th className="py-3 px-3 w-36">Status</th>
               <th className="py-3 px-4">Title</th>
@@ -121,7 +121,7 @@ export const TaskList: React.FC<TaskListProps> = ({
               <th className="py-3 px-3 w-24 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-[#171b26]">
+          <tbody className="divide-y divide-slate-100 dark:divide-[#1d142c]">
             {filteredTasks.length === 0 ? (
               <tr>
                 <td colSpan={8} className="py-16 text-center text-xs text-slate-400 dark:text-zinc-500">
@@ -134,7 +134,7 @@ export const TaskList: React.FC<TaskListProps> = ({
                 return (
                   <tr
                     key={task.id}
-                    className={`hover:bg-slate-50 dark:hover:bg-[#131622] transition-colors group ${
+                    className={`hover:bg-slate-50 dark:hover:bg-[#191126] transition-colors group ${
                       isBreached ? 'bg-rose-50/60 dark:bg-rose-950/15' : ''
                     }`}
                   >
@@ -158,7 +158,7 @@ export const TaskList: React.FC<TaskListProps> = ({
                           className="bg-transparent text-slate-700 dark:text-zinc-300 text-xs focus:outline-none capitalize cursor-pointer hover:text-slate-900 dark:hover:text-white"
                         >
                           {statuses.map((s) => (
-                            <option key={s} value={s} className="bg-white dark:bg-[#111420] text-slate-800 dark:text-zinc-200">
+                            <option key={s} value={s} className="bg-white dark:bg-[#171024] text-slate-800 dark:text-zinc-200">
                               {s.replace('_', ' ')}
                             </option>
                           ))}
@@ -191,7 +191,7 @@ export const TaskList: React.FC<TaskListProps> = ({
                           className="bg-transparent text-xs focus:outline-none cursor-pointer text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white capitalize"
                         >
                           {priorities.map((p) => (
-                            <option key={p} value={p} className="bg-white dark:bg-[#111420] text-slate-800 dark:text-zinc-200">
+                            <option key={p} value={p} className="bg-white dark:bg-[#171024] text-slate-800 dark:text-zinc-200">
                               {p.charAt(0).toUpperCase() + p.slice(1)}
                             </option>
                           ))}
@@ -243,7 +243,7 @@ export const TaskList: React.FC<TaskListProps> = ({
                           <button
                             onClick={() => onEditTask(task)}
                             title="Edit task"
-                            className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-[#1a1e2b] rounded transition-colors"
+                            className="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-[#211731] rounded transition-colors"
                           >
                             <Pencil className="w-3.5 h-3.5" />
                           </button>
@@ -251,7 +251,7 @@ export const TaskList: React.FC<TaskListProps> = ({
                         <button
                           onClick={() => onDeleteTask(task.id)}
                           title="Delete task"
-                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-slate-100 dark:text-zinc-500 dark:hover:text-rose-400 dark:hover:bg-[#1a1e2b] rounded transition-colors"
+                          className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-slate-100 dark:text-zinc-500 dark:hover:text-rose-400 dark:hover:bg-[#211731] rounded transition-colors"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

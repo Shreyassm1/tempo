@@ -94,9 +94,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       }}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 backdrop-blur-sm p-4"
     >
-      <div className="bg-white dark:bg-[#0e1017] border border-slate-200 dark:border-[#1e2332] w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] flex flex-col">
+      <div className="bg-white dark:bg-[#120c1a] border border-slate-200 dark:border-[#261a3a] w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-[#1b1f2d]">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-[#221834]">
           <div>
             <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100">
               Schedule settings
@@ -107,7 +107,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white p-1 rounded-md hover:bg-slate-100 dark:hover:bg-[#191d2a] transition-colors"
+            className="text-slate-400 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white p-1 rounded-md hover:bg-slate-100 dark:hover:bg-[#201630] transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -141,7 +141,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     className={`py-2 px-3 text-xs font-medium rounded-lg border transition-all ${
                       active
                         ? 'bg-slate-900 border-slate-900 text-white dark:bg-zinc-200 dark:border-zinc-200 dark:text-zinc-950 shadow-sm'
-                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900 dark:bg-[#131622] dark:border-[#222736] dark:text-zinc-400 dark:hover:text-zinc-200'
+                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900 dark:bg-[#191126] dark:border-[#2a1e3e] dark:text-zinc-400 dark:hover:text-zinc-200'
                     }`}
                   >
                     {t.label}
@@ -164,7 +164,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   type="time"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[#131622] border border-slate-200 dark:border-[#222736] rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-slate-400 dark:focus:border-zinc-500 tabular-nums"
+                  className="w-full bg-slate-50 dark:bg-[#191126] border border-slate-200 dark:border-[#2a1e3e] rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-slate-400 dark:focus:border-zinc-500 tabular-nums"
                 />
               </div>
               <div>
@@ -173,7 +173,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                   type="time"
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[#131622] border border-slate-200 dark:border-[#222736] rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-slate-400 dark:focus:border-zinc-500 tabular-nums"
+                  className="w-full bg-slate-50 dark:bg-[#191126] border border-slate-200 dark:border-[#2a1e3e] rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-slate-400 dark:focus:border-zinc-500 tabular-nums"
                 />
               </div>
             </div>
@@ -199,7 +199,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                     className={`flex-1 py-1.5 text-xs font-medium rounded-lg border transition-all ${
                       active
                         ? 'bg-slate-900 border-slate-900 text-white dark:bg-zinc-200 dark:border-zinc-200 dark:text-zinc-950 font-semibold shadow-sm'
-                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900 dark:bg-[#131622] dark:border-[#222736] dark:text-zinc-400 dark:hover:text-zinc-200'
+                        : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900 dark:bg-[#191126] dark:border-[#2a1e3e] dark:text-zinc-400 dark:hover:text-zinc-200'
                     }`}
                   >
                     {day.label}
@@ -259,7 +259,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
 
           {/* Smart Day Rollover */}
-          <div className="pt-3 border-t border-slate-100 dark:border-[#1b1f2d]">
+          <div className="pt-3 border-t border-slate-100 dark:border-[#221834]">
             <div className="flex items-center justify-between gap-4">
               <div>
                 <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 block">
@@ -291,7 +291,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-slate-100 dark:border-[#1b1f2d] flex justify-end gap-2.5">
+        <div className="px-6 py-4 border-t border-slate-100 dark:border-[#221834] flex justify-end gap-2.5">
           <button
             onClick={onClose}
             className="px-4 py-2 text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white transition-colors"

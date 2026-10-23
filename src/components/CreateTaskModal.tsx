@@ -68,10 +68,10 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
       }}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 dark:bg-black/70 backdrop-blur-sm p-4"
     >
-      <div className="bg-white dark:bg-[#0e1017] border border-slate-200 dark:border-[#1e2332] w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-white dark:bg-[#120c1a] border border-slate-200 dark:border-[#261a3a] w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150">
         <form onSubmit={handleSubmit}>
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-[#1b1f2d]">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-[#221834]">
             <div>
               <h3 className="text-sm font-semibold text-slate-900 dark:text-zinc-100">
                 New task
@@ -83,7 +83,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="text-slate-400 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white p-1 rounded-md hover:bg-slate-100 dark:hover:bg-[#191d2a] transition-colors"
+              className="text-slate-400 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white p-1 rounded-md hover:bg-slate-100 dark:hover:bg-[#201630] transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
@@ -103,7 +103,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 required
-                className="w-full bg-slate-50 dark:bg-[#131622] border border-slate-200 dark:border-[#222736] rounded-lg px-3.5 py-2.5 text-xs text-slate-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:border-slate-400 dark:focus:border-zinc-500"
+                className="w-full bg-slate-50 dark:bg-[#191126] border border-slate-200 dark:border-[#2a1e3e] rounded-lg px-3.5 py-2.5 text-xs text-slate-900 dark:text-zinc-100 placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:border-slate-400 dark:focus:border-zinc-500"
               />
             </div>
 
@@ -117,7 +117,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={3}
-                className="w-full bg-slate-50 dark:bg-[#131622] border border-slate-200 dark:border-[#222736] rounded-lg px-3.5 py-2 text-xs text-slate-900 dark:text-zinc-200 placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:border-slate-400 dark:focus:border-zinc-500 resize-none"
+                className="w-full bg-slate-50 dark:bg-[#191126] border border-slate-200 dark:border-[#2a1e3e] rounded-lg px-3.5 py-2 text-xs text-slate-900 dark:text-zinc-200 placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:border-slate-400 dark:focus:border-zinc-500 resize-none"
               />
             </div>
 
@@ -136,8 +136,8 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                       onClick={() => setPriority(p)}
                       className={`py-2 px-1 rounded-lg border flex justify-center transition-all ${
                         active
-                          ? 'border-slate-400 bg-slate-100 dark:border-zinc-500 dark:bg-[#191d2c] shadow-sm'
-                          : 'border-slate-200 bg-slate-50 hover:border-slate-300 dark:border-[#222736] dark:bg-[#131622] dark:hover:border-zinc-700'
+                          ? 'border-slate-400 bg-slate-100 dark:border-zinc-500 dark:bg-[#211632] shadow-sm'
+                          : 'border-slate-200 bg-slate-50 hover:border-slate-300 dark:border-[#2a1e3e] dark:bg-[#191126] dark:hover:border-zinc-700'
                       }`}
                     >
                       <PriorityBadge priority={p} size="sm" />
@@ -164,7 +164,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                   step="0.5"
                   value={estimatedHours}
                   onChange={(e) => setEstimatedHours(parseFloat(e.target.value))}
-                  className="w-24 bg-slate-50 dark:bg-[#131622] border border-slate-200 dark:border-[#222736] rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-zinc-100 tabular-nums focus:outline-none focus:border-slate-400 dark:focus:border-zinc-500"
+                  className="w-24 bg-slate-50 dark:bg-[#191126] border border-slate-200 dark:border-[#2a1e3e] rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-zinc-100 tabular-nums focus:outline-none focus:border-slate-400 dark:focus:border-zinc-500"
                 />
                 <div className="flex items-center gap-1.5 flex-1">
                   {presets.map((h) => (
@@ -175,7 +175,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                       className={`px-2.5 py-1 text-xs rounded-lg border transition-all tabular-nums ${
                         estimatedHours === h
                           ? 'bg-slate-900 text-white dark:bg-zinc-200 dark:text-zinc-950 border-slate-900 dark:border-zinc-200 font-medium'
-                          : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900 dark:bg-[#131622] dark:border-[#222736] dark:text-zinc-400 dark:hover:text-zinc-200'
+                          : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900 dark:bg-[#191126] dark:border-[#2a1e3e] dark:text-zinc-400 dark:hover:text-zinc-200'
                       }`}
                     >
                       {h}h
@@ -214,13 +214,13 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
                 type="datetime-local"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-[#131622] border border-slate-200 dark:border-[#222736] rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-slate-400 dark:focus:border-zinc-500 tabular-nums"
+                className="w-full bg-slate-50 dark:bg-[#191126] border border-slate-200 dark:border-[#2a1e3e] rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-slate-400 dark:focus:border-zinc-500 tabular-nums"
               />
             </div>
 
             {/* Start Today Override (only when Smart Rollover is enabled) */}
             {settings.smart_rollover !== false && (
-              <div className="pt-2 border-t border-slate-100 dark:border-[#1b1f2d]">
+              <div className="pt-2 border-t border-slate-100 dark:border-[#221834]">
                 <div className="flex items-center justify-between gap-4">
                   <div>
                     <label className="text-xs font-medium text-slate-700 dark:text-zinc-300 block">
@@ -253,7 +253,7 @@ export const CreateTaskModal: React.FC<CreateTaskModalProps> = ({
           </div>
 
           {/* Footer */}
-          <div className="px-6 py-4 border-t border-slate-100 dark:border-[#1b1f2d] flex justify-end gap-2.5">
+          <div className="px-6 py-4 border-t border-slate-100 dark:border-[#221834] flex justify-end gap-2.5">
             <button
               type="button"
               onClick={onClose}

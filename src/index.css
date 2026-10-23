@@ -4,22 +4,22 @@
 
 @layer base {
   :root {
-    --bg-main: #f8fafc;
-    --bg-surface: #ffffff;
-    --border-subtle: #e2e8f0;
-    --text-primary: #0f172a;
-    --text-secondary: #64748b;
-    --text-muted: #94a3b8;
+    --bg-main: #efdcb4;
+    --bg-surface: #fffaf0;
+    --border-subtle: #e3cfa6;
+    --text-primary: #231812;
+    --text-secondary: #634b36;
+    --text-muted: #7f6449;
     color-scheme: light;
   }
 
   .dark {
-    --bg-main: #090a0f;
-    --bg-surface: #0e1017;
-    --border-subtle: #1c202d;
-    --text-primary: #f4f4f5;
-    --text-secondary: #a1a1aa;
-    --text-muted: #71717a;
+    --bg-main: #120d1f;
+    --bg-surface: #1d1730;
+    --border-subtle: #2c2444;
+    --text-primary: #f3e9d6;
+    --text-secondary: #cdbda6;
+    --text-muted: #ab9cad;
     color-scheme: dark;
   }
 
@@ -37,16 +37,19 @@
   }
 
   ::selection {
-    background-color: rgba(225, 29, 72, 0.25);
+    background-color: rgba(210, 58, 132, 0.28);
     color: inherit;
   }
 
   *:focus-visible {
-    outline: 2px solid #3b82f6;
+    outline: 2px solid #1a9a91;
     outline-offset: 1px;
   }
 
-  /* Clean subtle scrollbars */
+  input, textarea {
+    caret-color: #d23a84;
+  }
+
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -55,10 +58,38 @@
     background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: rgba(148, 163, 184, 0.4);
+    background: rgba(127, 100, 73, 0.4);
     border-radius: 9999px;
   }
   .dark ::-webkit-scrollbar-thumb {
-    background: #1f2330;
+    background: #43395f;
   }
+}
+
+/* ゴゴゴ trembles in place */
+@keyframes menace {
+  0%, 100% { transform: translate(0, 0); }
+  25% { transform: translate(0.6px, -0.8px); }
+  50% { transform: translate(-0.5px, 0.4px); }
+  75% { transform: translate(0.4px, 0.7px); }
+}
+.menacing text { animation: menace 0.9s steps(4) infinite; transform-box: fill-box; }
+
+@keyframes tumble {
+  0% { transform: translateX(-36px) rotate(0deg); opacity: 0; }
+  15%, 85% { opacity: 1; }
+  100% { transform: translateX(36px) rotate(300deg); opacity: 0; }
+}
+.tumbleweed { animation: tumble 4.5s cubic-bezier(0.3, 0, 0.7, 1) infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .menacing text, .tumbleweed { animation: none; }
+}
+
+/* Buffer time drawn as trail dust behind the rider */
+.dust {
+  background: repeating-linear-gradient(-45deg, rgba(217, 119, 6, 0.55) 0 3px, rgba(217, 119, 6, 0.18) 3px 6px);
+}
+.dark .dust {
+  background: repeating-linear-gradient(-45deg, rgba(251, 191, 36, 0.5) 0 3px, rgba(251, 191, 36, 0.14) 3px 6px);
 }

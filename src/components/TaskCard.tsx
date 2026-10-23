@@ -3,6 +3,7 @@ import type { Task, UserSettings } from '../types';
 import { PriorityBadge } from './PriorityBadge';
 import { StatusIcon } from './StatusIcon';
 import { formatDeadline, checkBreach } from '../utils/date';
+import { Menacing } from './Frontier';
 import { Clock, AlertCircle, Trash2, Pencil } from 'lucide-react';
 
 interface TaskCardProps {
@@ -41,8 +42,8 @@ export const TaskCard: React.FC<TaskCardProps> = ({
         isDragging
           ? 'opacity-40 scale-[0.98] border-indigo-400 bg-indigo-50/30 dark:border-indigo-500 dark:bg-indigo-950/30'
           : isBreached
-          ? 'border-rose-300 bg-rose-50/50 dark:border-rose-900/50 dark:bg-rose-950/10 hover:border-rose-400'
-          : 'bg-white dark:bg-[#10131b] border-slate-200 dark:border-[#1c202d] hover:border-slate-300 dark:hover:border-[#2e3549]'
+          ? 'border-rose-300 bg-rose-50 dark:border-rose-800/70 dark:bg-[#26112a] hover:border-rose-400 shadow-rose-900/10'
+          : 'bg-white dark:bg-[#140e1f] border-slate-200 dark:border-[#231934] hover:border-slate-300 dark:hover:border-[#392954]'
       }`}
     >
       {/* Top row: ID, Priority & Actions */}
@@ -72,7 +73,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               onDelete(task.id);
             }}
             title="Delete task"
-            className="p-1 text-slate-400 hover:text-rose-600 dark:text-zinc-500 dark:hover:text-rose-400 rounded hover:bg-slate-100 dark:hover:bg-[#191d29] transition-colors"
+            className="p-1 text-slate-400 hover:text-rose-600 dark:text-zinc-500 dark:hover:text-rose-400 rounded hover:bg-slate-100 dark:hover:bg-[#1f162f] transition-colors"
           >
             <Trash2 className="w-3.5 h-3.5" />
           </button>
@@ -92,7 +93,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       )}
 
       {/* Clean meta row: Scheduled deadline & Work total */}
-      <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 dark:border-[#1a1e2a] text-xs text-slate-500 dark:text-zinc-400">
+      <div className="flex items-center justify-between pt-2.5 border-t border-slate-100 dark:border-[#201730] text-xs text-slate-500 dark:text-zinc-400">
         <div className="flex items-center gap-1.5 min-w-0">
           {task.status !== 'done' && task.scheduled_deadline ? (
             <div
@@ -108,6 +109,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                 <Clock className="w-3.5 h-3.5 text-slate-400 dark:text-zinc-500 shrink-0" />
               )}
               <span className="truncate">{formatDeadline(task.scheduled_deadline)}</span>
+              {isBreached && <Menacing size={11} className="opacity-70" />}
             </div>
           ) : (
             <div className="flex items-center gap-1.5 text-slate-400 dark:text-zinc-500">
@@ -127,7 +129,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
               e.stopPropagation();
               onEdit(task);
             }}
-            className="flex items-center gap-1 text-[11px] text-slate-700 hover:text-slate-950 dark:text-zinc-300 dark:hover:text-white font-medium px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 dark:bg-[#181c28] dark:hover:bg-[#202636] transition-colors"
+            className="flex items-center gap-1 text-[11px] text-slate-700 hover:text-slate-950 dark:text-zinc-300 dark:hover:text-white font-medium px-2 py-0.5 rounded bg-slate-100 hover:bg-slate-200 dark:bg-[#1e152e] dark:hover:bg-[#291c3e] transition-colors"
             title="Edit ticket"
           >
             <Pencil className="w-3 h-3" />

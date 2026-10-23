@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import type { Task, TaskStatus, UserSettings } from '../types';
 import { TaskCard } from './TaskCard';
 import { StatusIcon } from './StatusIcon';
+import { Tumbleweed } from './Frontier';
 import { Plus } from 'lucide-react';
 
 interface TaskBoardProps {
@@ -104,6 +105,8 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
       }
 
       if (isTouchDragActive.current) {
+        // Stop the board from scrolling, which would fire touchcancel and drop the drag.
+        e.preventDefault();
         setTouchPos({ x: touch.clientX, y: touch.clientY });
 
         // Identify which column the finger is over
@@ -128,7 +131,7 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
       setTouchTargetCol(null);
     };
 
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
     window.addEventListener('touchend', handleTouchEnd);
     window.addEventListener('touchcancel', handleTouchEnd);
 
@@ -142,7 +145,7 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
   const activeDraggingId = draggedTaskId || touchDraggingTask?.id;
 
   return (
-    <div className="flex flex-col md:flex-row md:items-start gap-4 p-4 md:p-6 h-full overflow-x-auto max-w-[1600px] mx-auto relative">
+    <div className="flex flex-col md:flex-row md:items-start gap-8 md:gap-4 p-4 md:p-6 h-full overflow-x-auto max-w-[1600px] mx-auto relative">
       {columns.map((col) => {
         const colTasks = tasks.filter((t) => t.status === col.status);
         const totalEffort = colTasks.reduce((sum, t) => sum + t.estimated_hours, 0);
@@ -158,17 +161,17 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
             className={`flex flex-col rounded-xl border w-full md:w-1/4 md:min-w-[270px] md:flex-1 max-h-[calc(100vh-130px)] shadow-sm transition-all duration-150 ${
               isHovered
                 ? 'bg-indigo-50/50 dark:bg-indigo-950/20 border-indigo-400 dark:border-indigo-500/70 ring-2 ring-indigo-500/20 shadow-md'
-                : 'bg-slate-100/70 dark:bg-[#0d0f17] border-slate-200/80 dark:border-[#1b1f2c]'
+                : 'bg-slate-100/95 dark:bg-[#110c1a]/95 max-md:bg-slate-100/50 max-md:dark:bg-[#110c1a]/40 max-md:backdrop-blur-[2px] border-slate-200/80 dark:border-[#221833]'
             }`}
           >
             {/* Column Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200/80 dark:border-[#1b1f2c]">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200/80 dark:border-[#221833]">
               <div className="flex items-center gap-2">
                 <StatusIcon status={col.status} />
                 <h3 className="text-xs font-semibold text-slate-800 dark:text-zinc-200">
                   {col.title}
                 </h3>
-                <span className="text-[11px] font-medium px-2 py-0.2 bg-white dark:bg-[#171b26] text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-transparent rounded-full tabular-nums">
+                <span className="text-[11px] font-medium px-2 py-0.5 bg-white dark:bg-[#1d142c] text-slate-600 dark:text-zinc-400 border border-slate-200 dark:border-transparent rounded-full tabular-nums">
                   {colTasks.length}
                 </span>
               </div>
@@ -181,7 +184,7 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
                 )}
                 <button
                   onClick={() => onOpenCreateWithStatus(col.status)}
-                  className="p-1 text-slate-500 hover:text-slate-900 hover:bg-slate-200/60 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-[#181c28] rounded-md transition-colors"
+                  className="p-1 text-slate-500 hover:text-slate-900 hover:bg-slate-200/60 dark:text-zinc-400 dark:hover:text-white dark:hover:bg-[#1e152e] rounded-md transition-colors"
                   title={`Add task to ${col.title}`}
                 >
                   <Plus className="w-4 h-4" />
@@ -196,10 +199,17 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({
                   className={`py-12 text-center text-xs rounded-lg border border-dashed transition-colors ${
                     isHovered
                       ? 'border-indigo-400 text-indigo-600 dark:border-indigo-500 dark:text-indigo-400 font-medium bg-indigo-50/20 dark:bg-indigo-950/10'
-                      : 'border-slate-300 dark:border-[#1e2332] text-slate-400 dark:text-zinc-600'
+                      : 'border-slate-300 dark:border-[#261a3a] text-slate-400 dark:text-zinc-600'
                   }`}
                 >
-                  {isHovered ? `Drop here for ${col.title}` : 'No tasks'}
+                  {isHovered ? (
+                    `Drop here for ${col.title}`
+                  ) : (
+                    <div className="flex flex-col items-center gap-2">
+                      <Tumbleweed className="text-slate-400 dark:text-zinc-600" />
+                      <span>No tasks</span>
+                    </div>
+                  )}
                 </div>
               ) : (
                 colTasks.map((task) => (

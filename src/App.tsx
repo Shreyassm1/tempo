@@ -11,6 +11,7 @@ import { SettingsModal } from './components/SettingsModal';
 import { CreateTaskModal } from './components/CreateTaskModal';
 import { EditTaskModal } from './components/EditTaskModal';
 import { checkBreach } from './utils/date';
+import { DesertBackdrop, SteelBall } from './components/Frontier';
 import { Layers, FileText, Clock, ArrowLeftRight, Plus } from 'lucide-react';
 
 export function App() {
@@ -245,7 +246,9 @@ export function App() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#090a0f] text-slate-900 dark:text-zinc-100 flex flex-col font-sans select-none antialiased">
+    <div className="min-h-screen isolate relative text-slate-900 dark:text-zinc-100 flex flex-col font-sans select-none antialiased">
+      <DesertBackdrop />
+
       {/* Top App Header */}
       <Header
         activeView={activeView}
@@ -305,7 +308,7 @@ export function App() {
       </main>
 
       {/* Clean Mobile Bottom Navigation Bar */}
-      <nav className="md:hidden border-t border-slate-200 dark:border-[#1c202d] bg-white/95 dark:bg-[#0b0d13]/95 backdrop-blur-md sticky bottom-0 z-40 px-3 py-2 flex items-center justify-around shadow-sm">
+      <nav className="md:hidden border-t border-slate-200 dark:border-[#231934] bg-white/95 dark:bg-[#0e0a16]/95 backdrop-blur-md sticky bottom-0 z-40 px-3 py-2 flex items-center justify-around shadow-sm">
         <button
           onClick={() => setActiveView('board')}
           className={`flex flex-col items-center gap-1 py-1 px-3 text-[11px] font-medium transition-colors ${
@@ -329,10 +332,11 @@ export function App() {
             setCreateInitialStatus('todo');
             setIsCreateOpen(true);
           }}
-          className="p-2.5 bg-slate-900 hover:bg-black text-white dark:bg-zinc-100 dark:hover:bg-white dark:text-zinc-950 rounded-full shadow-md active:scale-95 transition-transform"
+          className="relative rounded-full shadow-md shadow-slate-900/30 active:scale-95 transition-transform"
           title="New Task"
         >
-          <Plus className="w-5 h-5" />
+          <SteelBall size={42} groove={false} />
+          <Plus className="w-5 h-5 absolute inset-0 m-auto text-[#2a2d36]" strokeWidth={2.6} />
         </button>
         <button
           onClick={() => setActiveView('timeline')}
